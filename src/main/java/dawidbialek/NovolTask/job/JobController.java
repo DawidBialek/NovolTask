@@ -30,8 +30,8 @@ public class JobController {
         return repository.findAll(Sort.by(Sort.Direction.valueOf(sort.get(1).toUpperCase(Locale.ROOT)), sort.get(0)));
     }
 
-    @GetMapping(value = "/jobs", params = {"page, size"})
-    List<Job> allPaging(@RequestParam("page") int page, @RequestParam("size") int size) {
+    @GetMapping(value = "/jobs", params = {"page", "size"})
+    List<Job> allPaging(@RequestParam(value = "page", required = true) int page, @RequestParam(value = "size", required = true) int size) {
         List<Job> jobs = repository.findAll();
 
         Pageable paging = PageRequest.of(page, size);
