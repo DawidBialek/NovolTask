@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 public class JobController {
@@ -26,14 +27,14 @@ public class JobController {
     @GetMapping(value = "/jobs", params = {"sort"})
     List<Job> sort(@RequestParam("sort") List<String> sort) {
         System.out.println("sort");
-        return repository.findAll(Sort.by(Sort.Direction.valueOf(sort.get(1)), sort.get(0)));
+        return repository.findAll(Sort.by(Sort.Direction.valueOf(sort.get(1).toUpperCase(Locale.ROOT)), sort.get(0)));
     }
 
-    @GetMapping(value = "/jobs/{pageNumber}/{pageSize}")
-    List<Job> allPaging(@PathVariable int pageNumber, @PathVariable int pageSize) {
+    @GetMapping(value = "/jobs", params = {"page, size"})
+    List<Job> allPaging(@RequestParam("page") int page, @RequestParam("size") int size) {
         List<Job> jobs = repository.findAll();
 
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        Pageable paging = PageRequest.of(page, size);
         Page<Job> pagedResult = repository.findAll(paging);
 
         return pagedResult.toList();
