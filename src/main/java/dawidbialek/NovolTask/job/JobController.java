@@ -1,5 +1,8 @@
 package dawidbialek.NovolTask.job;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +29,15 @@ public class JobController {
         return repository.findAll(Sort.by(Sort.Direction.valueOf(sort.get(1)), sort.get(0)));
     }
 
-//    @GetMapping("/jobsP")
-//    Page<Job> allPaging() {
-//        Pageable pageable = PageRequest.of(0, 2);
-//        return repository.findAll(pageable);
-//    }
+    @GetMapping(value = "/jobs/{pageNumber}/{pageSize}")
+    List<Job> allPaging(@PathVariable int pageNumber, @PathVariable int pageSize) {
+        List<Job> jobs = repository.findAll();
+
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        Page<Job> pagedResult = repository.findAll(paging);
+
+        return pagedResult.toList();
+    }
 
     @PostMapping("/jobs")
     Job newJob(@RequestBody Job newJob) {
